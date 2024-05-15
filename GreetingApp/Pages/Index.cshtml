@@ -1,0 +1,18 @@
+    @page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h2>Welcome to the Greeting App!</h2>
+
+<form method="post">
+    <label for="name">Enter your name:</label>
+    <input type="text" id="name" name="name" required />
+    <button type="submit">Submit</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Name))
+{
+    <p>Hello, @Model.Name!</p>
+}
