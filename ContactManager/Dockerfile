@@ -7,14 +7,14 @@ EXPOSE 443
 # Use SDK image to build the application
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["ContactManager.csproj", "./"]
-RUN dotnet restore "ContactManager.csproj"
+COPY *.csproj .
+RUN dotnet restore
 COPY . .
-WORKDIR "/src/."
-RUN dotnet build "ContactManager.csproj" -c Release -o /app/build
+WORKDIR "/src"
+RUN dotnet build -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ContactManager.csproj" -c Release -o /app/publish
+RUN dotnet publish -c Release -o /app/publish
 
 # Final stage/image
 FROM base AS final
