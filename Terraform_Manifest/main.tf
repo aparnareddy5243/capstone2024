@@ -1,22 +1,12 @@
+# Configure the Azure provider
 terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.65"
-    }
-
-    random = {
-      source  = "hashicorp/random"
-      version = "3.1.0"
+      version = "~> 3.99.0"
     }
   }
-
-  backend "azurerm" {
-    resource_group_name  = var.resource_group_name
-    storage_account_name = "terraform5243"
-    container_name       = "container5243"
-    key                  = "container5243.state"
-  }
+  required_version = ">= 0.14.9"
 }
 
 provider "azurerm" {
@@ -30,7 +20,7 @@ resource "azurerm_resource_group" "appu-rg" {
 
 resource "azurerm_container_registry" "appu-acr" {
   name                = var.container_registry_name
-  sku                 = "standard"
+  sku                 = "Standard"
   resource_group_name = azurerm_resource_group.appu-rg.name
   location            = azurerm_resource_group.appu-rg.location
 }
@@ -43,7 +33,7 @@ resource "azurerm_kubernetes_cluster" "appu-k8s-cluster" {
 
   default_node_pool {
     name       = "default"
-    node_count = 3
+    node_count = 2
     vm_size    = "Standard_D2_v2"
   }
 
@@ -53,6 +43,11 @@ resource "azurerm_kubernetes_cluster" "appu-k8s-cluster" {
 
   tags = {
     Environment = "Production"
+  }
+
+  network_profile {
+    load_balancer_sku = "Standard"
+    network_plugin    = "kubenet"
   }
 }
 
